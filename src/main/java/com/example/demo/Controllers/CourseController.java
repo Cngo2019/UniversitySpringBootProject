@@ -3,6 +3,7 @@ package com.example.demo.Controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -49,6 +50,15 @@ public class CourseController {
     @PostMapping(value="/courses", consumes="application/json", produces="application/json")
     public Course createCourse(@RequestBody Course course) {
         return courseRepository.save(course);
+    }
+
+    @PutMapping(
+    value="/courses",
+    params={"coursePrefix", "courseNumber"},
+    consumes="application/json", 
+    produces="application/json")
+    public Course updateCourse(@RequestParam String coursePrefix, @RequestParam String courseNumber, @RequestBody Course newCourse) {
+        return courseRepository.updateCourse(new CourseId(coursePrefix, courseNumber), newCourse.getCourseId());
     }
     
 }
