@@ -25,7 +25,7 @@ public interface StudentDao extends JpaRepository<Student, Integer> {
     public Iterable<Student> getStudentById(int id);
 
     @Modifying
-    @Query(value="UPDATE student SET first_name=:#{#student.firstName}, last_name=:#{#student.lastName} WHERE student_id=:id", nativeQuery = true)
+    @Query(value="UPDATE student SET first_name=:#{#student.firstName}, last_name=:#{#student.lastName}, major=:#{#student.major} WHERE student_id=:id", nativeQuery = true)
     public void updateStudentInformation(int id, @Param("student") Student newStudent);
 
     @Modifying

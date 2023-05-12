@@ -18,8 +18,6 @@ import com.example.demo.Repository.Dao.CourseDao;
 import com.example.demo.Repository.Dao.ProfessorDao;
 import com.example.demo.Repository.Dao.StudentDao;
 
-import jakarta.persistence.Id;
-
 
 @RestController
 public class StudentController {
@@ -43,7 +41,7 @@ public class StudentController {
     }
 
     @PutMapping("/students/{id}")
-    public Student updateStudent(@PathVariable("id") int id, Student newStudent) {
+    public Student updateStudent(@PathVariable("id") int id, @RequestBody Student newStudent) {
         studentRepository.updateStudentInformation(id, newStudent);
         newStudent.setId(id);
         return newStudent;
