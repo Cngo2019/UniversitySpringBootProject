@@ -30,4 +30,10 @@ public interface CourseDao extends JpaRepository<Course, CourseId>{
     @Query(value= "DELETE FROM course WHERE course_prefix=:#{#courseId.coursePrefix} AND course_number =:#{#courseId.courseNumber}", nativeQuery = true)
     public void deleteCourse(@Param("courseId") CourseId courseId);
 
+    @Query(value="SELECT c.* FROM professor_course " +
+    "INNER JOIN course c ON " +
+    "c.course_prefix = professor_course.course_prefix AND c.course_number = professor_course.course_number " +
+    "WHERE professor_id = :id", nativeQuery = true)
+    public Iterable<Course> getCoursesTaughtByProfessor(int id);
+
 }
