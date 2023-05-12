@@ -11,6 +11,19 @@ import lombok.Data;
 @Entity
 @Table(name="Course")
 public class Course {
+
     @EmbeddedId
     private CourseId courseId;
+
+    @Column(name="course_description")
+    String courseDescription;
+
+    public Course() {
+
+    }
+    
+    public Course(CourseId courseId , String description) {
+        this.courseId = courseId;
+        this.courseDescription = description;
+    }
 }

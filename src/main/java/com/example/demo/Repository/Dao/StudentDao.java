@@ -9,6 +9,9 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import com.example.demo.Model.Student;
 
+import jakarta.transaction.Transactional;
+
+@Transactional
 public interface StudentDao extends JpaRepository<Student, Integer> {
     
 }

@@ -1,11 +1,12 @@
 package com.example.demo.Controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.Model.Professor;
@@ -14,6 +15,7 @@ import com.example.demo.Model.Course.CourseId;
 import com.example.demo.Repository.Dao.CourseDao;
 import com.example.demo.Repository.Dao.ProfessorDao;
 import com.example.demo.Repository.Dao.StudentDao;
+
 
 @RestController
 public class CourseController {
@@ -25,26 +27,25 @@ public class CourseController {
     @Autowired
     StudentDao studentRepository;
 
-    @GetMapping(value="/courses", params={"coursePrefix", "courseNumber"})
-    public Course getFullCourse(@RequestParam String coursePrefix, @RequestParam String courseNumber) {
-        CourseId courseId = new CourseId(coursePrefix, courseNumber);
-        return courseRepository.getCourseById(courseId);
+    @GetMapping(value="/courses/{coursePrefix}/{courseNumber}")
+    public Course getFullCourse(@PathVariable("coursePrefix") String coursePrefix, @PathVariable("courseNumber") String courseNumber) {
+        return courseRepository.getCourseById(new CourseId(coursePrefix, courseNumber));
     }
 
-    @GetMapping(value="/courses/professor", params={"coursePrefix", "courseNumber"})
-    public Iterable<Professor> getProfessorWhoTeachesCourse(@RequestParam String coursePrefix, @RequestParam String courseNumber) {
+    @GetMapping(value="/courses/{coursePrefix}/{courseNumber}/professors")
+    public Iterable<Professor> getProfessorWhoTeachesCourse(@PathVariable("coursePrefix") String coursePrefix, @PathVariable("courseNumber") String courseNumber) {
         CourseId courseId = new CourseId(coursePrefix, courseNumber);
         return professorRepository.getProfessorTeachesCourse(courseId);
-    }
-
-    @GetMapping(value="/courses", params={"coursePrefix"})
-    public Iterable<Course> getCoursePrefix(@RequestParam String coursePrefix) {
-        return courseRepository.getCoursesByPrefix(coursePrefix);
     }
 
     @GetMapping(value="/courses")
     public Iterable<Course> getAllCourses() {
         return courseRepository.findAll();
+    }
+
+    @GetMapping(value="/courses/{coursePrefix}")
+    public Iterable<Course> getCoursePrefix(@PathVariable("coursePrefix") String coursePrefix) {
+        return courseRepository.getCoursesByPrefix(coursePrefix);
     }
 
     @PostMapping(value="/courses", consumes="application/json", produces="application/json")
@@ -53,12 +54,21 @@ public class CourseController {
     }
 
     @PutMapping(
-    value="/courses",
-    params={"coursePrefix", "courseNumber"},
+    value="/courses/{oldCoursePrefix}/{oldCourseNumber}",
     consumes="application/json", 
     produces="application/json")
-    public Course updateCourse(@RequestParam String coursePrefix, @RequestParam String courseNumber, @RequestBody Course newCourse) {
-        return courseRepository.updateCourse(new CourseId(coursePrefix, courseNumber), newCourse.getCourseId());
+    public Course updateCourse(@PathVariable("oldCoursePrefix") String oldCoursePrefix, @PathVariable("oldCourseNumber") String oldCourseNumber, @RequestBody Course newCourse) {
+        courseRepository.updateCourse(new CourseId(oldCoursePrefix, oldCourseNumber), newCourse);
+        return newCourse;
+    }
+
+    @DeleteMapping(
+    value="/courses",
+    consumes="application/json", 
+    produces="application/json")
+    public Course updateCourse(@RequestBody Course course) {
+        courseRepository.deleteCourse(course.getCourseId());
+        return course;
     }
     
 }
